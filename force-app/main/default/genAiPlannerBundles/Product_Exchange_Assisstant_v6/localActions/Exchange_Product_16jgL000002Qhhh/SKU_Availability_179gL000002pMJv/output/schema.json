@@ -1,0 +1,62 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "availableOptionsText" : {
+      "title" : "Available Options Text",
+      "description" : "Plain-text size/color combinations of this product currently in stock, when the requested one is not available",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : true,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "currentSkuPrice" : {
+      "title" : "Current SKU Price",
+      "description" : "Price of the SKU currently owned, when known",
+      "lightning:type" : "lightning__numberType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "isAvailable" : {
+      "title" : "Is Available",
+      "description" : "Whether the requested size/color is currently in stock",
+      "lightning:type" : "lightning__booleanType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "newSkuPrice" : {
+      "title" : "New SKU Price",
+      "description" : "Price of the resolved SKU, when known",
+      "lightning:type" : "lightning__numberType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : true,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "priceDifference" : {
+      "title" : "Price Difference",
+      "description" : "New SKU price minus current SKU price. Positive = customer owes the difference, negative = refund owed, zero or blank = no additional charge.",
+      "lightning:type" : "lightning__numberType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : true,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "resolvedSkuId" : {
+      "title" : "Resolved SKU Id",
+      "description" : "Id of the SKU matching product+size+color, when available",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "resolvedSkuName" : {
+      "title" : "Resolved SKU Name",
+      "description" : "Name of the resolved SKU, e.g. Denim Jacket - Navy - L",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

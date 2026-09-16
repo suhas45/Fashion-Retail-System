@@ -1,0 +1,28 @@
+{
+  "required" : [ "newSkuId", "orderLineId" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "authenticatedUserId" : {
+      "title" : "Authenticated User Id",
+      "description" : "Id of the verified Salesforce User for this session, when known; leave blank otherwise",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "newSkuId" : {
+      "title" : "New SKU Id",
+      "description" : "Id of the new SKU to exchange into",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "orderLineId" : {
+      "title" : "Order Line Id",
+      "description" : "Id of the Order_Line__c being exchanged",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

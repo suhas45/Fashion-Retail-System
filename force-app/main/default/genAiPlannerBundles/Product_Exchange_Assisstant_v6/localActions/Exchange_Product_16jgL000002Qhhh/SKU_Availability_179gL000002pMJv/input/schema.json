@@ -1,0 +1,28 @@
+{
+  "required" : [ "currentSkuId", "desiredSize" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "currentSkuId" : {
+      "title" : "Current SKU Id",
+      "description" : "SKU of the order line item being exchanged",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "desiredColor" : {
+      "title" : "Desired Color",
+      "description" : "Color the customer wants instead; leave blank to keep the current color",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "desiredSize" : {
+      "title" : "Desired Size",
+      "description" : "Size the customer wants instead",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

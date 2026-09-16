@@ -1,0 +1,21 @@
+{
+  "required" : [ ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "authenticatedUserId" : {
+      "title" : "Authenticated User Id",
+      "description" : "Id of the verified Salesforce User for this session, resolved from the messaging session. Leave blank when testing with an order number directly.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "orderNumber" : {
+      "title" : "Order Number",
+      "description" : "Order number the customer provided, if any. When authenticatedUserId is also blank, this is the only way to identify which order to look up.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

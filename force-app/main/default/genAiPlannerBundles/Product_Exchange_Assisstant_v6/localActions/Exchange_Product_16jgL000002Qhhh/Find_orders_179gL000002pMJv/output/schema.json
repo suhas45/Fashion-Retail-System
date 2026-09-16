@@ -1,0 +1,14 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "response" : {
+      "title" : "Response",
+      "description" : "Resolved customer identity (contact/account) plus matching orders and line items",
+      "lightning:type" : "@apexClassType/c__PEA_ExchangeService$PEA_OrderLinesResult",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : true,
+      "copilotAction:isUsedByPlanner" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

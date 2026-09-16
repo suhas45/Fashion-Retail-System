@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlannerBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Deliver personalized customer interactions with an autonomous AI agent. Agentforce Service Agent intelligently supports your customers with common inquiries and escalates complex issues.</description>
+    <localTopicLinks>
+        <genAiPluginName>Exchange_Product_16jgL000002Qhhh</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>GeneralFAQ_16jgL000002Qhhh</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>agent_router_16jgL000002Qhhh</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>ambiguous_question_16jgL000002Qhhh</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>off_topic_16jgL000002Qhhh</genAiPluginName>
+    </localTopicLinks>
+    <localTopics>
+        <fullName>Exchange_Product_16jgL000002Qhhh</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Handles requests to look up a customer&apos;s orders and order line items, check available sizes and colors for an item, and exchange a purchased item for a different size or color.</description>
+        <developerName>Exchange_Product_16jgL000002Qhhh</developerName>
+        <genAiPluginInstructions>
+            <description>You are an AI Agent.</description>
+            <developerName>instruction0_179gL000002pMJv</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179gL000002pMJv</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>SKU_Availability_179gL000002pMJv</functionName>
+        </localActionLinks>
+        <localActionLinks>
+            <functionName>Find_orders_179gL000002pMJv</functionName>
+        </localActionLinks>
+        <localActionLinks>
+            <functionName>Create_Exchange_179gL000002pMJv</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>Find_orders_179gL000002pMJv</fullName>
+            <description>Used to find orders</description>
+            <developerName>Find_orders_179gL000002pMJv</developerName>
+            <invocationTarget>PEA_GetOrderLines</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>Find_orders</localDeveloperName>
+            <masterLabel>Find orders</masterLabel>
+        </localActions>
+        <localActions>
+            <fullName>SKU_Availability_179gL000002pMJv</fullName>
+            <description>Check the desired sku in the inventory</description>
+            <developerName>SKU_Availability_179gL000002pMJv</developerName>
+            <invocationTarget>PEA_CheckSkuAvailability</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>SKU_Availability</localDeveloperName>
+            <masterLabel>SKU Availability</masterLabel>
+        </localActions>
+        <localActions>
+            <fullName>Create_Exchange_179gL000002pMJv</fullName>
+            <description>Used to create the exchange record</description>
+            <developerName>Create_Exchange_179gL000002pMJv</developerName>
+            <invocationTarget>PEA_CreateExchange</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>Create_Exchange</localDeveloperName>
+            <masterLabel>Create Exchange</masterLabel>
+        </localActions>
+        <localDeveloperName>Exchange_Product</localDeveloperName>
+        <masterLabel>Exchange Product</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>GeneralFAQ_16jgL000002Qhhh</fullName>
+        <canEscalate>false</canEscalate>
+        <description>This subagent is for helping answer customer&apos;s questions by searching through the knowledge articles and providing information from those articles. The questions can be about the company and its products, policies or business procedures</description>
+        <developerName>GeneralFAQ_16jgL000002Qhhh</developerName>
+        <genAiPluginInstructions>
+            <description>You are an AI Agent.</description>
+            <developerName>instruction0_179gL000002pMJu</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179gL000002pMJu</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>AnswerQuestionsWithKnowledge_179gL000002pMJu</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>AnswerQuestionsWithKnowledge_179gL000002pMJu</fullName>
+            <description>Answers questions about company policies and procedures, troubleshooting steps, or product information. For example: &apos;What is your return policy?&apos; &apos;How do I fix an issue?&apos; or &apos;What features does a product have?&apos;</description>
+            <developerName>AnswerQuestionsWithKnowledge_179gL000002pMJu</developerName>
+            <invocationTarget>streamKnowledgeSearch</invocationTarget>
+            <invocationTargetType>standardInvocableAction</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+            <localDeveloperName>AnswerQuestionsWithKnowledge</localDeveloperName>
+            <masterLabel>Answer Questions with Knowledge</masterLabel>
+            <progressIndicatorMessage>Getting answers</progressIndicatorMessage>
+            <source>EmployeeCopilot__AnswerQuestionsWithKnowledge</source>
+        </localActions>
+        <localDeveloperName>GeneralFAQ</localDeveloperName>
+        <masterLabel>General FAQ</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>ambiguous_question_16jgL000002Qhhh</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Redirect conversation to relevant topics when user request is too ambiguous</description>
+        <developerName>ambiguous_question_16jgL000002Qhhh</developerName>
+        <genAiPluginInstructions>
+            <description>You are an AI Agent.</description>
+            <developerName>instruction0_179gL000002pMJt</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179gL000002pMJt</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>ambiguous_question</localDeveloperName>
+        <masterLabel>Ambiguous Question</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>agent_router_16jgL000002Qhhh</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Welcome the user and determine the appropriate subagent based on user input</description>
+        <developerName>agent_router_16jgL000002Qhhh</developerName>
+        <genAiPluginInstructions>
+            <description>You are an AI Agent.
+
+{{state.AgentScriptInternal_agent_instructions}}</description>
+            <developerName>instruction0_179gL000002pMJx</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179gL000002pMJx</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>agent_router</localDeveloperName>
+        <masterLabel>Agent Router</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>off_topic_16jgL000002Qhhh</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Redirect conversation to relevant topics when user request goes off-topic</description>
+        <developerName>off_topic_16jgL000002Qhhh</developerName>
+        <genAiPluginInstructions>
+            <description>You are an AI Agent.</description>
+            <developerName>instruction0_179gL000002pMJw</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179gL000002pMJw</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>off_topic</localDeveloperName>
+        <masterLabel>Off Topic</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <masterLabel>Product Exchange Assisstant</masterLabel>
+    <plannerType>Atlas__ConcurrentMultiAgentOrchestration</plannerType>
+</GenAiPlannerBundle>
