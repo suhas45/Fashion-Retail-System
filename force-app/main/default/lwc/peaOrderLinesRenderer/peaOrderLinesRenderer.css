@@ -1,0 +1,296 @@
+.orders-container {
+    width: 100%;
+    max-width: 620px;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =========================
+   Header
+   ========================= */
+
+.orders-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 16px 18px;
+
+    border: 1px solid #e5e5e5;
+    border-bottom: none;
+
+    border-radius: 12px 12px 0 0;
+
+    background: #ffffff;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #181818;
+}
+
+.header-subtitle {
+    font-size: 13px;
+    color: #444444;
+}
+
+.header-account {
+    font-size: 12px;
+    color: #747474;
+}
+
+.order-count {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 30px;
+    height: 30px;
+
+    padding: 0 8px;
+
+    border-radius: 16px;
+
+    background: #f3f3f3;
+
+    color: #181818;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   Order List
+   ========================= */
+
+.order-list {
+    display: flex;
+    flex-direction: column;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 0 0 12px 12px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+}
+
+
+/* =========================
+   Order Card
+   ========================= */
+
+.order-card {
+    padding: 18px;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+.order-card:last-child {
+    border-bottom: none;
+}
+
+
+/* =========================
+   Product Header
+   ========================= */
+
+.product-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 12px;
+}
+
+.product-information {
+    min-width: 0;
+}
+
+.product-name {
+    font-size: 15px;
+    font-weight: 600;
+
+    color: #181818;
+
+    line-height: 20px;
+}
+
+.sku-name {
+    margin-top: 4px;
+
+    font-size: 12px;
+
+    color: #747474;
+
+    line-height: 17px;
+}
+
+
+/* =========================
+   Status
+   ========================= */
+
+.status-badge {
+    flex-shrink: 0;
+
+    padding: 5px 9px;
+
+    border-radius: 12px;
+
+    background: #e8f5e9;
+
+    color: #2e6b3d;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   Order Number
+   ========================= */
+
+.order-number {
+    margin-top: 12px;
+
+    font-size: 12px;
+
+    color: #555555;
+}
+
+
+/* =========================
+   Details
+   ========================= */
+
+.details-grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-top: 16px;
+
+    padding-top: 14px;
+
+    border-top: 1px solid #eeeeee;
+}
+
+.detail-item {
+    min-width: 0;
+}
+
+.detail-label {
+    margin-bottom: 4px;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.5px;
+
+    color: #747474;
+}
+
+.detail-value {
+    font-size: 13px;
+
+    font-weight: 500;
+
+    color: #181818;
+
+    overflow-wrap: anywhere;
+}
+
+.detail-value.price {
+    font-weight: 600;
+}
+
+
+/* =========================
+   Empty State
+   ========================= */
+
+.empty-state {
+    padding: 24px;
+
+    text-align: center;
+
+    color: #747474;
+
+    font-size: 13px;
+
+    border: 1px solid #e5e5e5;
+
+    border-radius: 0 0 12px 12px;
+
+    background: #ffffff;
+}
+
+.empty-state-container {
+    padding: 24px;
+
+    border: 1px solid #e5e5e5;
+
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 24px;
+
+    margin-bottom: 8px;
+}
+
+.empty-title {
+    font-size: 15px;
+
+    font-weight: 600;
+
+    color: #181818;
+}
+
+.empty-message {
+    margin-top: 5px;
+
+    font-size: 12px;
+
+    color: #747474;
+}
+
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 480px) {
+
+    .details-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .product-header {
+        flex-direction: column;
+    }
+
+    .status-badge {
+        align-self: flex-start;
+    }
+}
