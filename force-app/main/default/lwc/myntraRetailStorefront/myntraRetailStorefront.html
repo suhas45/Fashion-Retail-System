@@ -1,0 +1,1219 @@
+<template>
+    <main class="storefront">
+
+        <!-- =========================================================
+             TOP PROMOTIONAL TICKER
+             ========================================================= -->
+        <div class="promo-ticker" role="region" aria-label="Promotions">
+            <div class="promo-track">
+                <span>✦ Flat 50% Off on Season Styles</span>
+                <i>•</i>
+                <span>New Arrivals Live Now</span>
+                <i>•</i>
+                <span>🚚 Free Shipping on orders over ₹6,999</span>
+                <i>•</i>
+                <span>↻ 7-Day Easy Returns</span>
+                <i>•</i>
+                <span>◉ Download App &amp; Get Exclusive Offers</span>
+                <i>•</i>
+
+                <!-- duplicate content for continuous scrolling -->
+                <span>✦ Flat 50% Off on Season Styles</span>
+                <i>•</i>
+                <span>New Arrivals Live Now</span>
+                <i>•</i>
+                <span>🚚 Free Shipping on orders over ₹6,999</span>
+                <i>•</i>
+                <span>↻ 7-Day Easy Returns</span>
+                <i>•</i>
+                <span>◉ Download App &amp; Get Exclusive Offers</span>
+            </div>
+        </div>
+
+
+        <!-- =========================================================
+             HEADER
+             ========================================================= -->
+        <header class={headerClassName}>
+            <div class="header-inner">
+
+                <button
+                    class="mobile-menu"
+                    onclick={toggleNavDrawer}
+                    aria-label="Menu">
+                    ☰
+                </button>
+
+                <div class="brand">
+                    <span class="brand-mark">C</span>
+                    <strong>C FASHION</strong>
+                </div>
+
+                <nav class="desktop-nav">
+                    <template
+                        for:each={categories}
+                        for:item="category">
+
+                        <button
+                            key={category.key}
+                            class={category.className}
+                            data-key={category.key}
+                            onclick={handleCategoryClick}>
+                            {category.label}
+                        </button>
+
+                    </template>
+
+                    <button
+                        class="sale"
+                        data-key="All"
+                        onclick={handleCategoryClick}>
+                        Sale
+                    </button>
+                </nav>
+
+                <div class="header-tools">
+
+                    <button onclick={toggleSearch}>
+                        ⌕
+                        <span>Search</span>
+                    </button>
+
+                    <button onclick={toggleWishlistDrawer}>
+                        ♡
+                        <span>Wishlist</span>
+                        <b>{wishlistCount}</b>
+                    </button>
+
+                    <button
+                        class="bag"
+                        onclick={toggleCart}>
+                        Bag
+                        <b>{cartCount}</b>
+                    </button>
+
+                </div>
+            </div>
+        </header>
+
+
+        <!-- =========================================================
+             MOBILE NAVIGATION
+             ========================================================= -->
+        <template if:true={isNavOpen}>
+            <div
+                class="drawer-backdrop"
+                onclick={closeNavDrawer}>
+            </div>
+        </template>
+
+        <aside class={navDrawerClassName}>
+
+            <div class="drawer-head">
+                <b>C FASHION</b>
+
+                <button onclick={closeNavDrawer}>
+                    ✕
+                </button>
+            </div>
+
+            <template
+                for:each={categories}
+                for:item="category">
+
+                <button
+                    key={category.key}
+                    data-key={category.key}
+                    onclick={handleCategoryClick}>
+                    {category.label}
+                </button>
+
+            </template>
+
+            <button
+                data-key="All"
+                onclick={handleCategoryClick}>
+                Sale
+            </button>
+
+        </aside>
+
+
+        <!-- =========================================================
+             HERO
+             ========================================================= -->
+        <section class="hero">
+
+            <div class="hero-copy">
+
+                <span class="eyebrow">
+                    NEW SEASON
+                </span>
+
+                <h1>
+                    Style<br />
+                    <em>Lives</em> Here
+                </h1>
+
+                <p>
+                    Refined silhouettes, timeless essentials,
+                    made for your everyday extraordinary.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <button
+                        class="primary"
+                        data-key="Trending"
+                        onclick={handleCategoryClick}>
+                        Shop New Arrivals →
+                    </button>
+
+                    <button
+                        class="secondary"
+                        data-key="All"
+                        onclick={handleCategoryClick}>
+                        Explore Collection
+                    </button>
+
+                </div>
+
+                <div class="hero-dots">
+
+                    <button aria-label="Previous">
+                        ‹
+                    </button>
+
+                    <i></i>
+                    <i class="active"></i>
+                    <i></i>
+
+                    <button aria-label="Next">
+                        ›
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="hero-image">
+                <img
+                    src={bannerAssets.hero}
+                    alt="C Fashion seasonal fashion campaign"
+                    onerror={handleImageError} />
+            </div>
+
+
+            <div class="hero-side-panel">
+
+                <span>
+                    AUTUMN<br />
+                    WINTER<br />
+                    2026
+                </span>
+
+                <hr />
+
+                <small>
+                    Comfort<br />
+                    Meets<br />
+                    Confidence
+                </small>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             CATEGORY CARDS
+             IMPORTANT:
+             Each card has a fixed visual frame.
+             ========================================================= -->
+        <section
+            class="category-section"
+            aria-label="Shop categories">
+
+            <div class="category-row">
+
+                <button
+                    class="category-card women"
+                    data-key="Women"
+                    onclick={handleCategoryClick}
+                    aria-label="Women">
+
+                    <img
+                        src={bannerAssets.women}
+                        alt="Women fashion"
+                        onerror={handleImageError} />
+
+                </button>
+
+
+                <button
+                    class="category-card men"
+                    data-key="Men"
+                    onclick={handleCategoryClick}
+                    aria-label="Men">
+
+                    <img
+                        src={bannerAssets.men}
+                        alt="Men fashion"
+                        onerror={handleImageError} />
+
+                </button>
+
+
+                <button
+                    class="category-card accessories"
+                    data-key="All"
+                    onclick={handleCategoryClick}
+                    aria-label="Accessories">
+
+                    <img
+                        src={bannerAssets.accessories}
+                        alt="Fashion accessories"
+                        onerror={handleImageError} />
+
+                </button>
+
+
+                <button
+                    class="category-card sale-card"
+                    data-key="All"
+                    onclick={handleCategoryClick}
+                    aria-label="Sale">
+
+                    <img
+                        src={bannerAssets.sale}
+                        alt="Sale fashion"
+                        onerror={handleImageError} />
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             SERVICE STRIP
+             ========================================================= -->
+        <section
+            class="service-strip"
+            aria-label="Customer benefits">
+
+            <article>
+
+                <b>♧</b>
+
+                <div>
+                    <strong>
+                        Free Shipping
+                    </strong>
+
+                    <span>
+                        on orders over ₹6,999
+                    </span>
+                </div>
+
+            </article>
+
+
+            <article>
+
+                <b>◇</b>
+
+                <div>
+                    <strong>
+                        7-Day
+                    </strong>
+
+                    <span>
+                        Easy Returns
+                    </span>
+                </div>
+
+            </article>
+
+
+            <article>
+
+                <b>♕</b>
+
+                <div>
+                    <strong>
+                        Member Privileges
+                    </strong>
+
+                    <span>
+                        Exclusive offers &amp; early access
+                    </span>
+                </div>
+
+            </article>
+
+
+            <article>
+
+                <b>✥</b>
+
+                <div>
+                    <strong>
+                        100% Authentic
+                    </strong>
+
+                    <span>
+                        Original products only
+                    </span>
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- =========================================================
+             PRODUCT CATALOG
+             ========================================================= -->
+        <section
+            class="catalog"
+            id="catalog">
+
+            <div class="catalog-head">
+
+                <div>
+
+                    <span class="eyebrow">
+                        CURATED FOR YOU
+                    </span>
+
+                    <h2>
+                        New &amp; Trending
+                    </h2>
+
+                    <p>
+                        Fresh styles. Modern essentials. Made for now.
+                    </p>
+
+                </div>
+
+
+                <div class="catalog-arrows">
+
+                    <a onclick={scrollToCatalog}>
+                        View All →
+                    </a>
+
+                    <button aria-label="Previous products">
+                        ‹
+                    </button>
+
+                    <button aria-label="Next products">
+                        ›
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <template if:true={hasError}>
+
+                <div class="state-panel">
+
+                    <h3>
+                        We couldn't load the edit.
+                    </h3>
+
+                    <p>
+                        {errorMessage}
+                    </p>
+
+                </div>
+
+            </template>
+
+
+            <template if:false={hasError}>
+
+                <template if:true={isLoading}>
+
+                    <div class="product-grid">
+
+                        <template
+                            for:each={skeletonCards}
+                            for:item="card">
+
+                            <div
+                                key={card}
+                                class="skeleton">
+                            </div>
+
+                        </template>
+
+                    </div>
+
+                </template>
+
+
+                <template if:false={isLoading}>
+
+                    <template if:true={hasProducts}>
+
+                        <div class="product-grid">
+
+                            <template
+                                for:each={decoratedProducts}
+                                for:item="product">
+
+                                <article
+                                    key={product.id}
+                                    class="product-card"
+                                    data-id={product.id}
+                                    onclick={openQuickView}>
+
+                                    <div class={product.mediaClass}>
+
+                                        <template if:true={product.hasImage}>
+
+                                            <img
+                                                src={product.imageUrl}
+                                                alt={product.name}
+                                                onerror={handleImageError} />
+
+                                        </template>
+
+
+                                        <template if:false={product.hasImage}>
+
+                                            <div class="product-fallback">
+                                                <span>C</span>
+                                            </div>
+
+                                        </template>
+
+
+                                        <span class="badge">
+                                            {product.badgeLabel}
+                                        </span>
+
+
+                                        <button
+                                            class={product.wishlistClass}
+                                            data-id={product.id}
+                                            onclick={toggleWishlist}
+                                            aria-label="Wishlist">
+                                            ♥
+                                        </button>
+
+
+                                        <button
+                                            class="quick-add"
+                                            data-id={product.id}
+                                            onclick={addToBag}>
+                                            Add to Bag
+                                        </button>
+
+                                    </div>
+
+
+                                    <div class="product-copy">
+
+                                        <div>
+
+                                            <small>
+                                                {product.brandLabel}
+                                            </small>
+
+                                            <h3>
+                                                {product.name}
+                                            </h3>
+
+                                            <div class="rating">
+                                                ★★★★★
+                                                <span>
+                                                    ({product.reviewCountLabel})
+                                                </span>
+                                            </div>
+
+                                        </div>
+
+                                        <strong>
+                                            {product.priceLabel}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="swatches">
+                                        <i></i>
+                                        <i></i>
+                                        <i></i>
+                                    </div>
+
+                                </article>
+
+                            </template>
+
+                        </div>
+
+                    </template>
+
+
+                    <template if:false={hasProducts}>
+
+                        <div class="state-panel">
+
+                            <h3>
+                                No styles found.
+                            </h3>
+
+                            <button onclick={clearSearch}>
+                                Clear filters
+                            </button>
+
+                        </div>
+
+                    </template>
+
+                </template>
+
+            </template>
+
+
+            <!-- IMPORTANT:
+                 This is now an isolated block.
+                 It cannot overlap editorial banners. -->
+            <template if:true={canLoadMore}>
+
+                <div class="load-more-section">
+
+                    <div class="load-more-line"></div>
+
+                    <button
+                        class="load-more-button"
+                        onclick={loadMoreProducts}>
+                        Show More Products ↓
+                    </button>
+
+                    <div class="load-more-line"></div>
+
+                </div>
+
+            </template>
+
+        </section>
+
+
+        <!-- =========================================================
+             EDITORIAL
+             ========================================================= -->
+        <section
+            class="editorial-section"
+            aria-label="Featured edits">
+
+            <div class="editorial-grid">
+
+                <button
+                    class="editorial editorial-button"
+                    data-key="Trending"
+                    onclick={handleCategoryClick}
+                    aria-label="Editor's Picks">
+
+                    <img
+                        src={bannerAssets.editorial1}
+                        alt="Editor's Picks"
+                        onerror={handleImageError} />
+
+                </button>
+
+
+                <button
+                    class="editorial editorial-button"
+                    data-key="All"
+                    onclick={handleCategoryClick}
+                    aria-label="Sustainable Edit">
+
+                    <img
+                        src={bannerAssets.editorial2}
+                        alt="Sustainable styles"
+                        onerror={handleImageError} />
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             NEWSLETTER
+             ========================================================= -->
+        <section class="newsletter">
+
+            <div>
+
+                <span class="eyebrow">
+                    PRIVATE ACCESS
+                </span>
+
+                <h2>
+                    Stay in the know
+                </h2>
+
+                <p>
+                    Sign up for new collections,
+                    exclusive offers and style inspiration.
+                </p>
+
+            </div>
+
+
+            <form onsubmit={handleNewsletterSubmit}>
+
+                <input
+                    type="email"
+                    required
+                    placeholder="Enter your email" />
+
+                <button>
+                    Subscribe
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- =========================================================
+             FOOTER
+             ========================================================= -->
+        <footer class="site-footer">
+
+            <div class="footer-grid">
+
+                <div class="footer-brand">
+
+                    <div class="brand">
+
+                        <span class="brand-mark">
+                            C
+                        </span>
+
+                        <strong>
+                            C FASHION
+                        </strong>
+
+                    </div>
+
+                    <p>
+                        Good clothes. Stronger points of view.
+                    </p>
+
+                    <div
+                        class="social"
+                        aria-label="Social links">
+                        ◎ &nbsp; f &nbsp; p &nbsp; ▶
+                    </div>
+
+                </div>
+
+
+                <div class="footer-column">
+
+                    <h4>
+                        SHOP
+                    </h4>
+
+                    <a>New Arrivals</a>
+                    <a>Women</a>
+                    <a>Men</a>
+                    <a>Collections</a>
+                    <a>Accessories</a>
+                    <a>Sale</a>
+
+                </div>
+
+
+                <div class="footer-column">
+
+                    <h4>
+                        HELP
+                    </h4>
+
+                    <a>Shipping</a>
+                    <a>Returns</a>
+                    <a>Size Guide</a>
+                    <a>FAQs</a>
+                    <a>Contact Us</a>
+
+                </div>
+
+
+                <div class="footer-column">
+
+                    <h4>
+                        COMPANY
+                    </h4>
+
+                    <a>Our Story</a>
+                    <a>Sustainability</a>
+                    <a>Careers</a>
+                    <a>Press</a>
+                    <a>Store Locator</a>
+
+                </div>
+
+
+                <div class="app-card">
+
+                    <strong>
+                        Download our App
+                    </strong>
+
+                    <p>
+                        Shop on the go
+                    </p>
+
+                    <div class="app-badges">
+
+                        <span>
+                             App Store
+                        </span>
+
+                        <span>
+                            ▶ Google Play
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="copyright">
+
+                <span>
+                    © {currentYear} C FASHION.
+                    All rights reserved.
+                </span>
+
+                <span>
+                    Privacy Policy
+                    &nbsp; | &nbsp;
+                    Terms &amp; Conditions
+                    &nbsp; | &nbsp;
+                    Accessibility
+                </span>
+
+            </div>
+
+        </footer>
+
+
+        <!-- =========================================================
+             SEARCH
+             ========================================================= -->
+        <template if:true={isSearchOpen}>
+
+            <div
+                class="overlay"
+                onclick={handleOverlayClick}>
+
+                <div class="search-panel">
+
+                    <form onsubmit={handleSearchSubmit}>
+
+                        <input
+                            class="search-input"
+                            type="search"
+                            value={searchTerm}
+                            oninput={handleSearchInput}
+                            placeholder="Search for products, brands and more..." />
+
+                        <button
+                            type="button"
+                            onclick={closeSearch}>
+                            ✕
+                        </button>
+
+                    </form>
+
+                    <p>
+                        Search the collection by product,
+                        brand or colour.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </template>
+
+
+        <!-- =========================================================
+             WISHLIST
+             ========================================================= -->
+        <template if:true={isWishlistVisible}>
+
+            <div
+                class="overlay"
+                onclick={handleOverlayClick}>
+
+                <aside class="side-drawer">
+
+                    <div class="drawer-head">
+
+                        <div>
+
+                            <span>
+                                SAVED FOR LATER
+                            </span>
+
+                            <h2>
+                                Wishlist
+                                <small>
+                                    {wishlistCount}
+                                </small>
+                            </h2>
+
+                        </div>
+
+                        <button onclick={closeWishlistDrawer}>
+                            ✕
+                        </button>
+
+                    </div>
+
+
+                    <template if:true={hasWishlistProducts}>
+
+                        <div class="wishlist-list">
+
+                            <template
+                                for:each={wishlistProducts}
+                                for:item="product">
+
+                                <article key={product.id}>
+
+                                    <div class="wish-img">
+
+                                        <template if:true={product.hasImage}>
+
+                                            <img
+                                                src={product.imageUrl}
+                                                alt={product.name} />
+
+                                        </template>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <small>
+                                            {product.brandLabel}
+                                        </small>
+
+                                        <h3>
+                                            {product.name}
+                                        </h3>
+
+                                        <strong>
+                                            {product.priceLabel}
+                                        </strong>
+
+                                        <button
+                                            data-id={product.id}
+                                            onclick={addWishlistProductToBag}>
+                                            Add to Bag
+                                        </button>
+
+                                    </div>
+
+
+                                    <button
+                                        class="remove-wish"
+                                        data-id={product.id}
+                                        onclick={toggleWishlist}>
+                                        ♥
+                                    </button>
+
+                                </article>
+
+                            </template>
+
+                        </div>
+
+                    </template>
+
+
+                    <template if:false={hasWishlistProducts}>
+
+                        <div class="empty-wishlist">
+
+                            <div>
+                                ♥
+                            </div>
+
+                            <h3>
+                                Your wishlist is empty
+                            </h3>
+
+                            <p>
+                                Save your favourite styles here.
+                            </p>
+
+                        </div>
+
+                    </template>
+
+                </aside>
+
+            </div>
+
+        </template>
+
+
+        <!-- =========================================================
+             CART
+             ========================================================= -->
+        <template if:true={isCartOpen}>
+
+            <div
+                class="overlay"
+                onclick={handleOverlayClick}>
+
+                <aside class="side-drawer">
+
+                    <div class="drawer-head">
+
+                        <div>
+
+                            <span>
+                                YOUR SELECTION
+                            </span>
+
+                            <h2>
+                                Bag
+                                <small>
+                                    {cartCount}
+                                </small>
+                            </h2>
+
+                        </div>
+
+                        <button onclick={closeCart}>
+                            ✕
+                        </button>
+
+                    </div>
+
+
+                    <template if:true={hasCartItems}>
+
+                        <div class="cart-list">
+
+                            <template
+                                for:each={cartLineItems}
+                                for:item="item">
+
+                                <article key={item.id}>
+
+                                    <div class="wish-img">
+
+                                        <template if:true={item.hasImage}>
+
+                                            <img
+                                                src={item.imageUrl}
+                                                alt={item.name} />
+
+                                        </template>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <small>
+                                            {item.brandLabel}
+                                        </small>
+
+                                        <h3>
+                                            {item.name}
+                                        </h3>
+
+                                        <strong>
+                                            {item.lineTotalLabel}
+                                        </strong>
+
+                                        <div class="qty">
+
+                                            <button
+                                                data-id={item.id}
+                                                onclick={decrementCartItem}>
+                                                −
+                                            </button>
+
+                                            <span>
+                                                {item.qty}
+                                            </span>
+
+                                            <button
+                                                data-id={item.id}
+                                                onclick={incrementCartItem}>
+                                                +
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <button
+                                        class="remove-wish"
+                                        data-id={item.id}
+                                        onclick={removeCartItem}>
+                                        ✕
+                                    </button>
+
+                                </article>
+
+                            </template>
+
+                        </div>
+
+
+                        <div class="cart-total">
+
+                            <span>
+                                <b>
+                                    Subtotal
+                                </b>
+
+                                <strong>
+                                    {cartSubtotalLabel}
+                                </strong>
+                            </span>
+
+                            <button
+                                class="primary full"
+                                onclick={handleCheckout}>
+                                Checkout
+                            </button>
+
+                        </div>
+
+                    </template>
+
+
+                    <template if:false={hasCartItems}>
+
+                        <div class="empty-wishlist">
+
+                            <div>
+                                🛍
+                            </div>
+
+                            <h3>
+                                Your bag is empty
+                            </h3>
+
+                            <p>
+                                Add something you love.
+                            </p>
+
+                        </div>
+
+                    </template>
+
+                </aside>
+
+            </div>
+
+        </template>
+
+
+        <!-- =========================================================
+             QUICK VIEW
+             ========================================================= -->
+        <template if:true={isQuickViewOpen}>
+
+            <div
+                class="overlay quick-overlay"
+                onclick={handleOverlayClick}>
+
+                <div class="quick-view">
+
+                    <button
+                        class="close"
+                        onclick={closeQuickView}>
+                        ✕
+                    </button>
+
+
+                    <div class="quick-image">
+
+                        <template if:true={quickViewProduct.hasImage}>
+
+                            <img
+                                src={quickViewProduct.imageUrl}
+                                alt={quickViewProduct.name} />
+
+                        </template>
+
+                    </div>
+
+
+                    <div class="quick-copy">
+
+                        <span class="eyebrow">
+                            {quickViewProduct.brandLabel}
+                        </span>
+
+                        <h2>
+                            {quickViewProduct.name}
+                        </h2>
+
+                        <strong>
+                            {quickViewProduct.priceLabel}
+                        </strong>
+
+                        <p>
+                            A refined C Fashion edit
+                            designed for modern everyday dressing.
+                        </p>
+
+                        <button
+                            class="primary full"
+                            onclick={addQuickViewToBag}>
+                            Add to Bag
+                        </button>
+
+                        <button
+                            class={quickViewProduct.wishlistClass}
+                            onclick={toggleWishlist}>
+                            ♥ Save to Wishlist
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </template>
+
+
+        <!-- =========================================================
+             TOAST
+             ========================================================= -->
+        <div class={toastClassName}>
+            {toastMessage}
+        </div>
+
+    </main>
+</template>

@@ -1,0 +1,189 @@
+<template>
+    <div class="login-page">
+
+        <!-- =========================================================
+             TOP PROMOTIONAL TICKER
+             ========================================================= -->
+        <div class="promo-ticker" role="region" aria-label="Promotions">
+            <div class="promo-track">
+                <span>✦ Flat 50% Off on Season Styles</span>
+                <i>•</i>
+                <span>New Arrivals Live Now</span>
+                <i>•</i>
+                <span>🚚 Free Shipping on orders over ₹6,999</span>
+                <i>•</i>
+                <span>↻ 7-Day Easy Returns</span>
+                <i>•</i>
+
+                <!-- duplicate content for continuous scrolling -->
+                <span>✦ Flat 50% Off on Season Styles</span>
+                <i>•</i>
+                <span>New Arrivals Live Now</span>
+                <i>•</i>
+                <span>🚚 Free Shipping on orders over ₹6,999</span>
+                <i>•</i>
+                <span>↻ 7-Day Easy Returns</span>
+            </div>
+        </div>
+
+
+        <div class="login-shell">
+
+            <!-- =========================================================
+                 BRAND / EDITORIAL PANEL
+                 ========================================================= -->
+            <section class="login-visual" aria-hidden="true">
+
+                <div class="brand">
+                    <span class="brand-mark">C</span>
+                    <strong>C FASHION</strong>
+                </div>
+
+                <div class="visual-copy">
+
+                    <span class="eyebrow">MEMBER ACCESS</span>
+
+                    <h1>
+                        Welcome<br />
+                        <em>Back</em>
+                    </h1>
+
+                    <p>
+                        Sign in to track your orders, manage exchanges
+                        and unlock member-only edits.
+                    </p>
+
+                </div>
+
+                <div class="visual-benefits">
+
+                    <article>
+                        <b>♧</b>
+                        <div>
+                            <strong>Free Shipping</strong>
+                            <span>on orders over ₹6,999</span>
+                        </div>
+                    </article>
+
+                    <article>
+                        <b>◇</b>
+                        <div>
+                            <strong>7-Day</strong>
+                            <span>Easy Returns</span>
+                        </div>
+                    </article>
+
+                    <article>
+                        <b>♕</b>
+                        <div>
+                            <strong>Member Privileges</strong>
+                            <span>Exclusive offers &amp; early access</span>
+                        </div>
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================================================
+                 SIGN IN PANEL
+                 ========================================================= -->
+            <section class="login-form-panel">
+
+                <div class="login-card">
+
+                    <div class="brand mobile-brand">
+                        <span class="brand-mark">C</span>
+                        <strong>C FASHION</strong>
+                    </div>
+
+                    <span class="eyebrow">SIGN IN</span>
+
+                    <h2>Your Account</h2>
+
+                    <p class="subcopy">
+                        Sign in to continue shopping the edit.
+                    </p>
+
+                    <template if:true={hasError}>
+                        <div class="form-alert" role="alert">
+                            {errorMessage}
+                        </div>
+                    </template>
+
+                    <form onsubmit={handleSubmit}>
+
+                        <label class="field">
+                            <span>Username</span>
+                            <input
+                                type="text"
+                                name="username"
+                                value={username}
+                                oninput={handleUsernameChange}
+                                autocomplete="username"
+                                required />
+                        </label>
+
+                        <label class="field">
+                            <span>Password</span>
+                            <div class="password-wrap">
+                                <input
+                                    type={passwordInputType}
+                                    name="password"
+                                    value={password}
+                                    oninput={handlePasswordChange}
+                                    autocomplete="current-password"
+                                    required />
+                                <button
+                                    type="button"
+                                    class="toggle-visibility"
+                                    onclick={togglePasswordVisibility}>
+                                    {passwordToggleLabel}
+                                </button>
+                            </div>
+                        </label>
+
+                        <div class="field-row">
+                            <a href={forgotPasswordUrl} class="forgot-link">
+                                Forgot password?
+                            </a>
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="primary full"
+                            disabled={isSubmitting}>
+                            {submitLabel}
+                        </button>
+
+                    </form>
+
+                    <div class="divider">
+                        <span>New to C FASHION?</span>
+                    </div>
+
+                    <a href={selfRegisterUrl} class="secondary full">
+                        Create an Account
+                    </a>
+
+                    <a href="/" class="guest-link">
+                        ← Continue browsing as guest
+                    </a>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- =========================================================
+             TOAST
+             ========================================================= -->
+        <div class={toastClassName}>
+            {toastMessage}
+        </div>
+
+    </div>
+</template>

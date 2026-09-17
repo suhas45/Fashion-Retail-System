@@ -1,215 +1,116 @@
 <template>
+    <div class="orders-card">
 
-    <!-- Orders found -->
-    <template if:true={found}>
+        <!-- Header -->
+        <div class="orders-header">
+            <div class="header-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path
+                        d="M6 8h12l1.2 12.1c.06.6-.42 1.1-1.02 1.1H5.82c-.6 0-1.08-.5-1.02-1.1L6 8Z"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linejoin="round"
+                    ></path>
+                    <path
+                        d="M9 8V6a3 3 0 0 1 6 0v2"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                    ></path>
+                </svg>
+            </div>
 
-        <div class="orders-container">
+            <div class="header-text">
+                <div class="header-title">My Orders</div>
+                <div class="header-subtitle">{ordersFoundLabel}</div>
+            </div>
+        </div>
 
-            <!-- Header -->
-            <div class="orders-header">
+        <!-- Orders -->
+        <template if:true={hasOrders}>
+            <template
+                for:each={orders}
+                for:item="order"
+            >
+                <div
+                    class="order-group"
+                    key={order.key}
+                >
 
-                <div class="header-content">
-
-                    <div class="header-title">
-                        My Orders
+                    <!-- Order header -->
+                    <div class="order-group-header">
+                        <span class="order-number">Order {order.orderNumber}</span>
+                        <span class="order-date">{order.displayOrderDate}</span>
                     </div>
 
-                    <template if:true={hasLines}>
-                        <div class="header-subtitle">
-                            {customerName}
-                        </div>
-                    </template>
+                    <!-- Order lines -->
+                    <div class="order-lines">
 
-                    <template if:true={hasAccountName}>
-                        <div class="header-account">
-                            {accountName}
-                        </div>
-                    </template>
-
-                </div>
-
-                <div class="order-count">
-                    {totalFound}
-                </div>
-
-            </div>
-
-
-            <!-- Order Lines -->
-            <template if:true={hasLines}>
-
-                <div class="order-list">
-
-                    <template
-                        for:each={displayLines}
-                        for:item="line"
-                    >
-
-                        <div
-                            key={line.orderLineId}
-                            class="order-card"
+                        <template
+                            for:each={order.lines}
+                            for:item="line"
                         >
+                            <div
+                                class="order-line"
+                                key={line.key}
+                            >
 
-                            <!-- Product Header -->
-                            <div class="product-header">
-
-                                <div class="product-information">
-
-                                    <template if:true={line.hasProductName}>
-                                        <div class="product-name">
-                                            {line.productName}
-                                        </div>
-                                    </template>
-
-                                    <template if:true={line.hasSkuName}>
-                                        <div class="sku-name">
-                                            {line.skuName}
-                                        </div>
-                                    </template>
-
+                                <!-- Selection Number -->
+                                <div class="selection-number">
+                                    {line.selectionNumber}
                                 </div>
 
-
-                                <!-- Order Status -->
-                                <template if:true={line.hasOrderStatus}>
-
-                                    <div class="status-badge">
-                                        {line.orderStatus}
-                                    </div>
-
-                                </template>
-
-                            </div>
-
-
-                            <!-- Order Number -->
-                            <template if:true={line.hasOrderNumber}>
-
-                                <div class="order-number">
-                                    Order #{line.orderNumber}
+                                <!-- Product Image -->
+                                <div class="product-image">
+                                    <template if:true={line.hasProductImage}>
+                                        <img
+                                            src={line.productImageUrl}
+                                            alt={line.displaySkuName}
+                                        />
+                                    </template>
                                 </div>
 
-                            </template>
-
-
-                            <!-- Details -->
-                            <div class="details-grid">
-
-                                <!-- Color -->
-                                <template if:true={line.hasColor}>
-
-                                    <div class="detail-item">
-
-                                        <div class="detail-label">
-                                            COLOR
-                                        </div>
-
-                                        <div class="detail-value">
-                                            {line.color}
-                                        </div>
-
+                                <!-- Product -->
+                                <div class="product-info">
+                                    <div class="product-name">
+                                        {line.displaySkuName}
                                     </div>
-
-                                </template>
-
-
-                                <!-- Size -->
-                                <template if:true={line.hasSize}>
-
-                                    <div class="detail-item">
-
-                                        <div class="detail-label">
-                                            SIZE
-                                        </div>
-
-                                        <div class="detail-value">
-                                            {line.size}
-                                        </div>
-
-                                    </div>
-
-                                </template>
-
-
-                                <!-- Quantity -->
-                                <template if:true={line.hasQuantity}>
-
-                                    <div class="detail-item">
-
-                                        <div class="detail-label">
-                                            QUANTITY
-                                        </div>
-
-                                        <div class="detail-value">
-                                            {line.quantity}
-                                        </div>
-
-                                    </div>
-
-                                </template>
-
+                                </div>
 
                                 <!-- Price -->
-                                <template if:true={line.hasPrice}>
+                                <div class="product-price">
+                                    {line.displayPrice}
+                                </div>
 
-                                    <div class="detail-item">
-
-                                        <div class="detail-label">
-                                            PRICE
-                                        </div>
-
-                                        <div class="detail-value price">
-                                            ${line.price}
-                                        </div>
-
-                                    </div>
-
-                                </template>
+                                <!-- Exchange -->
+                                <button
+                                    class="exchange-button"
+                                    data-prompt={line.exchangePrompt}
+                                    onclick={handleExchangeClick}
+                                    type="button"
+                                >Exchange</button>
 
                             </div>
+                        </template>
 
-                        </div>
-
-                    </template>
-
+                    </div>
                 </div>
-
             </template>
 
-
-            <!-- No order lines -->
-            <template if:false={hasLines}>
-
-                <div class="empty-state">
-                    No order lines were found.
-                </div>
-
-            </template>
-
-        </div>
-
-    </template>
-
-
-    <!-- No orders found -->
-    <template if:false={found}>
-
-        <div class="empty-state-container">
-
-            <div class="empty-icon">
-                🛍️
+            <!-- Hint -->
+            <div class="selection-hint">
+                Tap Exchange on an item, or type its number (e.g. 1).
             </div>
+        </template>
 
-            <div class="empty-title">
+        <!-- Empty State -->
+        <template if:false={hasOrders}>
+            <div class="empty-state">
                 No orders found
             </div>
+        </template>
 
-            <div class="empty-message">
-                We couldn't find any orders for your account.
-            </div>
-
-        </div>
-
-    </template>
-
+    </div>
 </template>

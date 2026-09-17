@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Bust_Inches__c</fullName>
+    <description>Shopper bust measurement used for personalized fit recommendations.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enter the shopper bust measurement in inches.</inlineHelpText>
+    <label>Bust Inches</label>
+    <precision>4</precision>
+    <required>false</required>
+    <scale>1</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

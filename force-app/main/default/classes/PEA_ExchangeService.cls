@@ -24,6 +24,7 @@ global without sharing class PEA_ExchangeService {
         @AuraEnabled global String size;
         @AuraEnabled global String productId;
         @AuraEnabled global String productName;
+        @AuraEnabled global String productImageUrl;
         @AuraEnabled global Decimal quantity;
         @AuraEnabled global Decimal price;
     }
@@ -147,13 +148,15 @@ global without sharing class PEA_ExchangeService {
             // the parent Order is already scoped to the resolved Account
             // above. Order_Line__c has no price field of its own - price
             // comes from the SKU's current catalog price (SKU__r.Price__c).
+            // Ordered by the parent order's start date (EffectiveDate) so
+            // lines arrive pre-grouped by order, most recent order first.
             List<Order_Line__c> items = [
                 SELECT Id, Name, Order__c, Quantity__c,
                     SKU__c, SKU__r.Name, SKU__r.Color__c, SKU__r.Size__c, SKU__r.Price__c,
-                    SKU__r.Product__c, SKU__r.Product__r.Name
+                    SKU__r.Product__c, SKU__r.Product__r.Name, SKU__r.Product__r.Product_Image__c
                 FROM Order_Line__c
                 WHERE Order__c IN :ordersById.keySet()
-                ORDER BY CreatedDate ASC
+                ORDER BY Order__r.EffectiveDate DESC, CreatedDate ASC
             ];
             for (Order_Line__c oi : items) {
                 Order ord = ordersById.get(oi.Order__c);
@@ -169,6 +172,9 @@ global without sharing class PEA_ExchangeService {
                 line.size = oi.SKU__r != null ? oi.SKU__r.Size__c : null;
                 line.productId = oi.SKU__r != null ? oi.SKU__r.Product__c : null;
                 line.productName = oi.SKU__r != null && oi.SKU__r.Product__r != null ? oi.SKU__r.Product__r.Name : null;
+                line.productImageUrl = oi.SKU__r != null && oi.SKU__r.Product__r != null
+                    ? extractImageUrl(oi.SKU__r.Product__r.Product_Image__c)
+                    : null;
                 line.quantity = oi.Quantity__c;
                 line.price = oi.SKU__r != null ? parsePrice(oi.SKU__r.Price__c) : null;
                 result.lines.add(line);
@@ -446,6 +452,22 @@ global without sharing class PEA_ExchangeService {
         } catch (Exception e) {
             return null;
         }
+    }
+    // Product_Image__c is a rich text (Html) field that typically holds an
+    // <img> tag (e.g. from a data import), rather than a plain URL, so the
+    // src has to be pulled out for use in a plain <img> element. Falls back
+    // to the raw value when it's already a bare URL.
+    private static final Pattern IMG_SRC_PATTERN = Pattern.compile('(?i)src\\s*=\\s*"([^"]+)"');
+    private static String extractImageUrl(String rawHtml) {
+        if (String.isBlank(rawHtml)) {
+            return null;
+        }
+        Matcher m = IMG_SRC_PATTERN.matcher(rawHtml);
+        if (m.find()) {
+            return m.group(1);
+        }
+        String trimmed = rawHtml.trim();
+        return trimmed.toLowerCase().startsWith('http') ? trimmed : null;
     }
     private class SkuOption {
         String size;

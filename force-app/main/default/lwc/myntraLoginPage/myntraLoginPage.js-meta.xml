@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>C Fashion - Custom Login</masterLabel>
+    <description>Branded sign-in page for the C Fashion Experience Cloud site, matching the storefront theme.</description>
+    <targets>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+
+
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property
+                name="forgotPasswordUrl"
+                type="String"
+                default="/ForgotPassword"
+                label="Forgot Password URL"
+                description="Relative or absolute URL to the site's Forgot Password page." />
+            <property
+                name="selfRegisterUrl"
+                type="String"
+                default="/Register"
+                label="Self-Registration URL"
+                description="Relative or absolute URL to the site's Register page." />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>
