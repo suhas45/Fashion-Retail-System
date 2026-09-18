@@ -197,13 +197,19 @@ global without sharing class PEA_ExchangeService {
         return res;
     }
     // ---- Check SKU Availability ----
-    public class CheckAvailabilityRequest {
+    // Declared global with @JsonAccess (like PEA_OrderLine/PEA_OrderLinesResult
+    // above) so this can also be used as the value type for an
+    // lightning__AgentforceInput CLT - the size/color form shown instead of
+    // asking the customer in plain text. currentSkuId is carried through
+    // untouched by that form; only desiredSize/desiredColor are user-edited.
+    @JsonAccess(serializable='always' deserializable='always')
+    global class CheckAvailabilityRequest {
         @InvocableVariable(label='Current SKU Id' description='SKU of the order line item being exchanged' required=true)
-        public String currentSkuId;
+        @AuraEnabled global String currentSkuId;
         @InvocableVariable(label='Desired Size' description='Size the customer wants instead' required=true)
-        public String desiredSize;
+        @AuraEnabled global String desiredSize;
         @InvocableVariable(label='Desired Color' description='Color the customer wants instead; leave blank to keep the current color')
-        public String desiredColor;
+        @AuraEnabled global String desiredColor;
     }
     public class CheckAvailabilityResponse {
         @InvocableVariable(label='Is Available' description='Whether the requested size/color is currently in stock')

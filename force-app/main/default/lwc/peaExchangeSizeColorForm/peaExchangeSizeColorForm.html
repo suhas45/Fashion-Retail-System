@@ -1,0 +1,37 @@
+<template>
+    <div class="exchange-form">
+        <div class="form-title">What size or color would you like instead?</div>
+
+        <div class="form-field">
+            <lightning-input
+                type="text"
+                name="desiredSize"
+                label="Size"
+                placeholder="e.g. M"
+                value={desiredSize}
+                onchange={handleSizeChange}
+                required
+            ></lightning-input>
+        </div>
+
+        <div class="form-field">
+            <lightning-input
+                type="text"
+                name="desiredColor"
+                label="Color"
+                placeholder="Leave blank to keep the current color"
+                value={desiredColor}
+                onchange={handleColorChange}
+            ></lightning-input>
+        </div>
+
+        <div class="form-actions">
+            <lightning-button
+                label="Check Availability"
+                variant="brand"
+                onclick={handleSubmit}
+                disabled={isSubmitDisabled}
+            ></lightning-button>
+        </div>
+    </div>
+</template>
