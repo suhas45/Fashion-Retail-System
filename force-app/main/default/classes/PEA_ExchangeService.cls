@@ -197,50 +197,59 @@ global without sharing class PEA_ExchangeService {
         return res;
     }
     // ---- Check SKU Availability ----
-    // Declared global with @JsonAccess (like PEA_OrderLine/PEA_OrderLinesResult
-    // above) so this can also be used as the value type for an
-    // lightning__AgentforceInput CLT - the size/color form shown instead of
-    // asking the customer in plain text. currentSkuId is carried through
-    // untouched by that form; only desiredSize/desiredColor are user-edited.
     @JsonAccess(serializable='always' deserializable='always')
-    global class CheckAvailabilityRequest {
-        @InvocableVariable(label='Current SKU Id' description='SKU of the order line item being exchanged' required=true)
-        @AuraEnabled global String currentSkuId;
+    global class CheckAvailabilityInput {
         @InvocableVariable(label='Desired Size' description='Size the customer wants instead' required=true)
         @AuraEnabled global String desiredSize;
         @InvocableVariable(label='Desired Color' description='Color the customer wants instead; leave blank to keep the current color')
         @AuraEnabled global String desiredColor;
     }
-    public class CheckAvailabilityResponse {
+    public class CheckAvailabilityRequest {
+        public String currentSkuId;
+        public String desiredSize;
+        public String desiredColor;
+    }
+    @JsonAccess(serializable='always' deserializable='always')
+    global class AvailableOption {
+        @AuraEnabled global String skuId;
+        @AuraEnabled global String size;
+        @AuraEnabled global String color;
+        @AuraEnabled global Decimal price;
+    }
+    @JsonAccess(serializable='always' deserializable='always')
+    global class CheckAvailabilityResponse {
         @InvocableVariable(label='Is Available' description='Whether the requested size/color is currently in stock')
-        public Boolean isAvailable = false;
+        @AuraEnabled global Boolean isAvailable = false;
         @InvocableVariable(label='Resolved SKU Id' description='Id of the SKU matching product+size+color, when available')
-        public String resolvedSkuId;
-        @InvocableVariable(label='Resolved SKU Name' description='Name of the resolved SKU, e.g. Denim Jacket - Navy - L')
-        public String resolvedSkuName;
+        @AuraEnabled global String resolvedSkuId;
+        @InvocableVariable(label='Resolved SKU Name' description='Name of the resolved SKU')
+        @AuraEnabled global String resolvedSkuName;
         @InvocableVariable(label='Current SKU Price' description='Price of the SKU currently owned, when known')
-        public Decimal currentSkuPrice;
+        @AuraEnabled global Decimal currentSkuPrice;
         @InvocableVariable(label='New SKU Price' description='Price of the resolved SKU, when known')
-        public Decimal newSkuPrice;
-        @InvocableVariable(label='Price Difference' description='New SKU price minus current SKU price. Positive = customer owes the difference, negative = refund owed, zero or blank = no additional charge.')
-        public Decimal priceDifference;
+        @AuraEnabled global Decimal newSkuPrice;
+        @InvocableVariable(label='Price Difference' description='New SKU price minus current SKU price. Positive = customer owes the difference, negative = refund owed, zero = no additional charge.')
+        @AuraEnabled global Decimal priceDifference;
         @InvocableVariable(label='Available Options Text' description='Plain-text size/color combinations of this product currently in stock, when the requested one is not available')
-        public String availableOptionsText;
+        @AuraEnabled global String availableOptionsText;
+        @InvocableVariable(label='Available Options' description='Structured list of all in-stock size/color SKU options for the product')
+        @AuraEnabled global List<AvailableOption> options;
     }
     public static List<CheckAvailabilityResponse> checkAvailability(List<CheckAvailabilityRequest> inputs) {
         List<CheckAvailabilityResponse> responses = new List<CheckAvailabilityResponse>();
         for (CheckAvailabilityRequest req : inputs) {
             CheckAvailabilityResponse res = new CheckAvailabilityResponse();
+            res.options = new List<AvailableOption>();
             if (String.isBlank(req.currentSkuId) || String.isBlank(req.desiredSize)) {
                 res.isAvailable = false;
                 responses.add(res);
                 continue;
             }
-            // SKU__c/SKU_Inventory__c are custom objects with no automatic
-            // portal-user sharing visibility, so these queries run without
-            // WITH USER_MODE.
             List<SKU__c> currentSkus = [
-                SELECT Id, Product__c, Color__c, Price__c FROM SKU__c WHERE Id = :req.currentSkuId LIMIT 1
+                SELECT Id, Product__c, Color__c, Price__c
+                FROM SKU__c
+                WHERE Id = :req.currentSkuId
+                LIMIT 1
             ];
             if (currentSkus.isEmpty()) {
                 res.isAvailable = false;
@@ -251,7 +260,7 @@ global without sharing class PEA_ExchangeService {
             String targetColor = String.isNotBlank(req.desiredColor) ? req.desiredColor : currentSku.Color__c;
             res.currentSkuPrice = parsePrice(currentSku.Price__c);
             List<SKU__c> matches = [
-                SELECT Id, Name, Price__c
+                SELECT Id, Name, Size__c, Color__c, Price__c
                 FROM SKU__c
                 WHERE Product__c = :currentSku.Product__c
                     AND Size__c = :req.desiredSize
@@ -272,20 +281,79 @@ global without sharing class PEA_ExchangeService {
                 }
             }
             if (!matches.isEmpty() && qty > 0) {
-                res.resolvedSkuId = matches[0].Id;
-                res.resolvedSkuName = matches[0].Name;
+                SKU__c matchedSku = matches[0];
+                res.resolvedSkuId = matchedSku.Id;
+                res.resolvedSkuName = matchedSku.Name;
                 res.isAvailable = true;
-                res.newSkuPrice = parsePrice(matches[0].Price__c);
+                res.newSkuPrice = parsePrice(matchedSku.Price__c);
                 if (res.currentSkuPrice != null && res.newSkuPrice != null) {
                     res.priceDifference = res.newSkuPrice - res.currentSkuPrice;
                 }
             } else {
                 res.isAvailable = false;
-                res.availableOptionsText = formatAvailableOptions(findAvailableOptions(currentSku.Product__c));
+                res.options = findStructuredAvailableOptions(currentSku.Product__c);
+                res.availableOptionsText = formatStructuredAvailableOptions(res.options);
             }
             responses.add(res);
         }
         return responses;
+    }
+    private static List<AvailableOption> findStructuredAvailableOptions(Id productId) {
+        List<AvailableOption> options = new List<AvailableOption>();
+        List<AggregateResult> stocked = [
+            SELECT SKU__c, SUM(Quantity_On_Hand__c) totalQuantity
+            FROM SKU_Inventory__c
+            WHERE SKU__r.Product__c = :productId
+            GROUP BY SKU__c
+            HAVING SUM(Quantity_On_Hand__c) > 0
+        ];
+        if (stocked.isEmpty()) {
+            return options;
+        }
+        Set<Id> stockedSkuIds = new Set<Id>();
+        for (AggregateResult ar : stocked) {
+            Id skuId = (Id) ar.get('SKU__c');
+            if (skuId != null) {
+                stockedSkuIds.add(skuId);
+            }
+        }
+        if (stockedSkuIds.isEmpty()) {
+            return options;
+        }
+        List<SKU__c> skus = [
+            SELECT Id, Name, Size__c, Color__c, Price__c
+            FROM SKU__c
+            WHERE Id IN :stockedSkuIds
+            ORDER BY Color__c, Size__c
+        ];
+        for (SKU__c sku : skus) {
+            AvailableOption option = new AvailableOption();
+            option.skuId = sku.Id;
+            option.size = sku.Size__c;
+            option.color = sku.Color__c;
+            option.price = parsePrice(sku.Price__c);
+            options.add(option);
+        }
+        return options;
+    }
+    private static String formatStructuredAvailableOptions(List<AvailableOption> options) {
+        List<String> labels = new List<String>();
+        for (AvailableOption option : options) {
+            String label = '';
+            if (String.isNotBlank(option.size)) {
+                label += option.size;
+            }
+            if (String.isNotBlank(option.color)) {
+                if (String.isNotBlank(label)) {
+                    label += ' / ';
+                }
+                label += option.color;
+            }
+            if (String.isNotBlank(label)) {
+                labels.add(label);
+            }
+        }
+        return String.join(labels, ', ');
     }
     // ---- Create Exchange ----
     public class CreateExchangeRequest {
@@ -304,85 +372,310 @@ global without sharing class PEA_ExchangeService {
         @InvocableVariable(label='New SKU Id' description='Id of the new SKU to exchange into' required=true)
         public String newSkuId;
     }
-    public class CreateExchangeResponse {
-        @InvocableVariable(label='Success' description='Whether the exchange was created successfully')
-        public Boolean success = false;
-        @InvocableVariable(label='Exchange Number' description='Confirmation number for the exchange, e.g. EX-0001')
-        public String exchangeNumber;
-        @InvocableVariable(label='Status' description='Exchange status after creation, e.g. Requested or Failed')
-        public String status;
-    }
+    @JsonAccess(serializable='always' deserializable='always')
+global class CreateExchangeResponse {
+    @InvocableVariable(
+        label='Success'
+        description='Whether the exchange was created successfully'
+    )
+    @AuraEnabled
+    global Boolean success = false;
+
+    @InvocableVariable(
+        label='Exchange Number'
+        description='Confirmation number for the exchange'
+    )
+    @AuraEnabled
+    global String exchangeNumber;
+
+    @InvocableVariable(
+        label='Status'
+        description='Exchange status after creation'
+    )
+    @AuraEnabled
+    global String status;
+
+    @InvocableVariable(
+        label='Order Number'
+        description='Order number associated with the exchange'
+    )
+    @AuraEnabled
+    global String orderNumber;
+
+    @InvocableVariable(
+        label='Order Line Id'
+        description='Original order line being exchanged'
+    )
+    @AuraEnabled
+    global String orderLineId;
+
+    @InvocableVariable(
+        label='Original SKU Id'
+        description='SKU originally purchased'
+    )
+    @AuraEnabled
+    global String originalSkuId;
+
+    @InvocableVariable(
+        label='Original SKU Name'
+        description='Name of the originally purchased SKU'
+    )
+    @AuraEnabled
+    global String originalSkuName;
+
+    @InvocableVariable(
+        label='Original Size'
+        description='Size originally purchased'
+    )
+    @AuraEnabled
+    global String originalSize;
+
+    @InvocableVariable(
+        label='Original Color'
+        description='Color originally purchased'
+    )
+    @AuraEnabled
+    global String originalColor;
+
+    @InvocableVariable(
+        label='New SKU Id'
+        description='SKU selected for the exchange'
+    )
+    @AuraEnabled
+    global String newSkuId;
+
+    @InvocableVariable(
+        label='New SKU Name'
+        description='Name of the SKU selected for the exchange'
+    )
+    @AuraEnabled
+    global String newSkuName;
+
+    @InvocableVariable(
+        label='New Size'
+        description='Size selected for the exchange'
+    )
+    @AuraEnabled
+    global String newSize;
+
+    @InvocableVariable(
+        label='New Color'
+        description='Color selected for the exchange'
+    )
+    @AuraEnabled
+    global String newColor;
+
+    @InvocableVariable(
+        label='Original Price'
+        description='Price of the original SKU'
+    )
+    @AuraEnabled
+    global Decimal originalPrice;
+
+    @InvocableVariable(
+        label='New Price'
+        description='Price of the new SKU'
+    )
+    @AuraEnabled
+    global Decimal newPrice;
+
+    @InvocableVariable(
+        label='Price Difference'
+        description='Price difference returned by the exchange process'
+    )
+    @AuraEnabled
+    global Decimal priceDifference;
+}
     // orderLineId ownership is verified against the resolved Account when
     // authenticatedUserId is present, so one customer can never exchange
     // another's order line even if an orderLineId is supplied out of turn.
-    public static List<CreateExchangeResponse> createExchange(List<CreateExchangeRequest> inputs) {
-        List<CreateExchangeResponse> responses = new List<CreateExchangeResponse>();
-        for (CreateExchangeRequest req : inputs) {
-            CreateExchangeResponse res = new CreateExchangeResponse();
-            if (String.isBlank(req.orderLineId) || String.isBlank(req.newSkuId)) {
+    public static List<CreateExchangeResponse> createExchange(
+    List<CreateExchangeRequest> inputs
+) {
+    List<CreateExchangeResponse> responses =
+        new List<CreateExchangeResponse>();
+
+    for (CreateExchangeRequest req : inputs) {
+        CreateExchangeResponse res =
+            new CreateExchangeResponse();
+
+        if (
+            String.isBlank(req.orderLineId) ||
+            String.isBlank(req.newSkuId)
+        ) {
+            res.status = 'Failed';
+            responses.add(res);
+            continue;
+        }
+
+        List<Order_Line__c> items = [
+            SELECT
+                Id,
+                Order__c,
+                SKU__c,
+                SKU__r.Name,
+                SKU__r.Size__c,
+                SKU__r.Color__c,
+                SKU__r.Price__c
+            FROM Order_Line__c
+            WHERE Id = :req.orderLineId
+            LIMIT 1
+        ];
+
+        if (items.isEmpty()) {
+            res.status = 'Failed';
+            responses.add(res);
+            continue;
+        }
+
+        Order_Line__c originalItem = items[0];
+
+        if (
+            String.isNotBlank(req.contactId) ||
+            String.isNotBlank(req.authenticatedUserId)
+        ) {
+            Identity identity;
+
+            if (String.isNotBlank(req.contactId)) {
+                identity =
+                    resolveIdentityByContact(req.contactId);
+            } else {
+                identity =
+                    resolveIdentity(req.authenticatedUserId);
+            }
+
+            if (identity == null) {
                 res.status = 'Failed';
                 responses.add(res);
                 continue;
             }
-            // Order_Line__c is a custom object and does not get
-            // Salesforce's automatic portal-user sharing visibility the
-            // way standard Order does, so this runs without WITH
-            // USER_MODE; ownership is enforced explicitly below via the
-            // Order/Account check.
-            List<Order_Line__c> items = [
-                SELECT Id, Order__c, SKU__c
-                FROM Order_Line__c
-                WHERE Id = :req.orderLineId
+
+            List<Order> orders = [
+                SELECT Id, AccountId, OrderNumber
+                FROM Order
+                WHERE Id = :originalItem.Order__c
                 LIMIT 1
             ];
-            if (items.isEmpty()) {
+
+            if (
+                orders.isEmpty() ||
+                orders[0].AccountId != identity.accountId
+            ) {
                 res.status = 'Failed';
                 responses.add(res);
                 continue;
             }
-            Order_Line__c originalItem = items[0];
-            if (String.isNotBlank(req.contactId) || String.isNotBlank(req.authenticatedUserId)) {
-                Identity identity;
-                if (String.isNotBlank(req.contactId)) {
-                    identity = resolveIdentityByContact(req.contactId);
-                } else {
-                    identity = resolveIdentity(req.authenticatedUserId);
-                }
-                if (identity == null) {
-                    res.status = 'Failed';
-                    responses.add(res);
-                    continue;
-                }
-                List<Order> orders = [
-                    SELECT Id, AccountId FROM Order WHERE Id = :originalItem.Order__c  LIMIT 1
-                ];
-                if (orders.isEmpty() || orders[0].AccountId != identity.accountId) {
-                    res.status = 'Failed';
-                    responses.add(res);
-                    continue;
-                }
+
+            res.orderNumber = orders[0].OrderNumber;
+        } else {
+            List<Order> orders = [
+                SELECT Id, OrderNumber
+                FROM Order
+                WHERE Id = :originalItem.Order__c
+                LIMIT 1
+            ];
+
+            if (!orders.isEmpty()) {
+                res.orderNumber = orders[0].OrderNumber;
             }
-            Exchange__c exchange = new Exchange__c(
-                Order__c = originalItem.Order__c,
-                Order_Item__c = originalItem.Id,
-                Original_SKU__c = originalItem.SKU__c,
-                New_SKU__c = req.newSkuId,
-                Status__c = 'Requested'
-            );
-            insert exchange;
-            // Re-queried without WITH USER_MODE: Exchange__c has a Private
-            // sharing model, and restricted external licenses have shown
-            // they cannot reliably see even their own just-inserted
-            // records through WITH USER_MODE on a Private-external-sharing
-            // custom object.
-            Exchange__c saved = [SELECT Name FROM Exchange__c WHERE Id = :exchange.Id LIMIT 1];
-            res.success = true;
-            res.exchangeNumber = saved.Name;
-            res.status = 'Requested';
-            responses.add(res);
         }
-        return responses;
+
+        List<SKU__c> newSkus = [
+            SELECT
+                Id,
+                Name,
+                Size__c,
+                Color__c,
+                Price__c
+            FROM SKU__c
+            WHERE Id = :req.newSkuId
+            LIMIT 1
+        ];
+
+        if (newSkus.isEmpty()) {
+            res.status = 'Failed';
+            responses.add(res);
+            continue;
+        }
+
+        SKU__c newSku = newSkus[0];
+
+        Exchange__c exchange = new Exchange__c(
+            Order__c = originalItem.Order__c,
+            Order_Item__c = originalItem.Id,
+            Original_SKU__c = originalItem.SKU__c,
+            New_SKU__c = newSku.Id,
+            Status__c = 'Requested'
+        );
+
+        insert exchange;
+
+        Exchange__c saved = [
+            SELECT Name
+            FROM Exchange__c
+            WHERE Id = :exchange.Id
+            LIMIT 1
+        ];
+
+        res.success = true;
+        res.exchangeNumber = saved.Name;
+        res.status = 'Requested';
+
+        res.orderLineId = originalItem.Id;
+
+        res.originalSkuId =
+            originalItem.SKU__c;
+
+        res.originalSkuName =
+            originalItem.SKU__r != null
+                ? originalItem.SKU__r.Name
+                : null;
+
+        res.originalSize =
+            originalItem.SKU__r != null
+                ? originalItem.SKU__r.Size__c
+                : null;
+
+        res.originalColor =
+            originalItem.SKU__r != null
+                ? originalItem.SKU__r.Color__c
+                : null;
+
+        res.newSkuId =
+            newSku.Id;
+
+        res.newSkuName =
+            newSku.Name;
+
+        res.newSize =
+            newSku.Size__c;
+
+        res.newColor =
+            newSku.Color__c;
+
+        res.originalPrice =
+            parsePrice(
+                originalItem.SKU__r != null
+                    ? originalItem.SKU__r.Price__c
+                    : null
+            );
+
+        res.newPrice =
+            parsePrice(newSku.Price__c);
+
+        if (
+            res.originalPrice != null &&
+            res.newPrice != null
+        ) {
+            res.priceDifference =
+                res.newPrice - res.originalPrice;
+        }
+
+        responses.add(res);
     }
+
+    return responses;
+}
     // ---- Shared helpers ----
     private class Identity {
         Id contactId;

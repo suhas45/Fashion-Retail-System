@@ -5,15 +5,15 @@
 
     <isExposed>true</isExposed>
 
-    <masterLabel>PEA Exchange Size Color Form</masterLabel>
+    <masterLabel>PEA Exchange Record</masterLabel>
 
     <targets>
-        <target>lightning__AgentforceInput</target>
+        <target>lightning__AgentforceOutput</target>
     </targets>
 
     <targetConfigs>
-        <targetConfig targets="lightning__AgentforceInput">
-            <targetType name="c__PEA_Check_SKU_Availabilityy"/>
+        <targetConfig targets="lightning__AgentforceOutput">
+            <sourceType name="c__PEA_Exchange_Record"/>
         </targetConfig>
     </targetConfigs>
 

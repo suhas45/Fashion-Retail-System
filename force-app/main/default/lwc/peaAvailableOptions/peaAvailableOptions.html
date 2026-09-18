@@ -1,0 +1,108 @@
+<template>
+    <div class="options-card">
+
+        <div class="options-header">
+            <div class="header-icon">
+                <svg
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                >
+                    <path
+                        d="M6 8h12l1.2 12.1c.06.6-.42 1.1-1.02 1.1H5.82c-.6 0-1.08-.5-1.02-1.1L6 8Z"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linejoin="round"
+                    ></path>
+
+                    <path
+                        d="M9 8V6a3 3 0 0 1 6 0v2"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                    ></path>
+                </svg>
+            </div>
+
+            <div class="header-text">
+                <div class="header-title">
+                    Available Options
+                </div>
+
+                <div class="header-subtitle">
+                    Choose another size or color
+                </div>
+            </div>
+        </div>
+
+        <template if:true={hasOptions}>
+
+            <div class="options-list">
+
+                <template
+                    for:each={options}
+                    for:item="option"
+                >
+
+                    <button
+                        key={option.key}
+                        class="option-button"
+                        type="button"
+                        data-sku-id={option.skuId}
+                        data-size={option.size}
+                        data-color={option.color}
+                        onclick={handleOptionClick}
+                    >
+
+                        <div class="option-main">
+
+                            <span class="option-size">
+                                {option.size}
+                            </span>
+
+                            <span class="option-divider">
+                                /
+                            </span>
+
+                            <span class="option-color">
+                                {option.color}
+                            </span>
+
+                        </div>
+
+                        <div class="option-right">
+
+                            <template if:true={option.displayPrice}>
+                                <span class="option-price">
+                                    {option.displayPrice}
+                                </span>
+                            </template>
+
+                            <span class="option-arrow">
+                                →
+                            </span>
+
+                        </div>
+
+                    </button>
+
+                </template>
+
+            </div>
+
+            <div class="options-hint">
+                Select an option to continue with your exchange.
+            </div>
+
+        </template>
+
+        <template if:false={hasOptions}>
+            <div class="empty-state">
+                No other in-stock options are available.
+            </div>
+        </template>
+
+    </div>
+</template>

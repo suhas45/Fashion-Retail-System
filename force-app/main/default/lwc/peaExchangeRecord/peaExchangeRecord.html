@@ -1,0 +1,119 @@
+<template>
+    <div class="exchange-card">
+
+        <div class="exchange-header">
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <div>
+                <div class="header-title">
+                    Exchange Created
+                </div>
+
+                <div class="header-subtitle">
+                    Your product exchange has been created successfully
+                </div>
+            </div>
+        </div>
+
+
+        <div class="exchange-number-section">
+            <div class="label">
+                Exchange Number
+            </div>
+
+            <div class="exchange-number">
+                {exchangeNumber}
+            </div>
+        </div>
+
+
+        <div class="status-row">
+
+            <div>
+                <span class="label">Status</span>
+                <span class="status">{status}</span>
+            </div>
+
+            <template if:true={orderNumber}>
+                <div>
+                    <span class="label">Order</span>
+                    <span class="value">{orderNumber}</span>
+                </div>
+            </template>
+
+        </div>
+
+
+        <div class="products">
+
+            <div class="product-section">
+
+                <div class="section-label">
+                    Original Product
+                </div>
+
+                <div class="product-name">
+                    {originalProduct}
+                </div>
+
+                <div class="variant">
+                    {originalVariant}
+                </div>
+
+                <template if:true={originalPrice}>
+                    <div class="price">
+                        {originalPrice}
+                    </div>
+                </template>
+
+            </div>
+
+
+            <div class="arrow">
+                →
+            </div>
+
+
+            <div class="product-section">
+
+                <div class="section-label">
+                    New Product
+                </div>
+
+                <div class="product-name">
+                    {newProduct}
+                </div>
+
+                <div class="variant">
+                    {newVariant}
+                </div>
+
+                <template if:true={newPrice}>
+                    <div class="price">
+                        {newPrice}
+                    </div>
+                </template>
+
+            </div>
+
+        </div>
+
+
+        <template if:true={priceDifference}>
+            <div class="price-difference">
+
+                <span class="label">
+                    Price Difference
+                </span>
+
+                <span class="difference">
+                    {priceDifference}
+                </span>
+
+            </div>
+        </template>
+
+    </div>
+</template>
