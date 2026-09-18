@@ -1,9 +1,13 @@
 .exchange-form {
+    --pea-orange: #f97316;
+    --pea-orange-light: #fff3e8;
     --pea-violet: #7c3aed;
+    --pea-violet-light: #f4effe;
 
     width: 100%;
     background: #ffffff;
     border: 1px solid #e5e7eb;
+    border-top: 4px solid var(--pea-orange);
     border-radius: 14px;
 
     padding: 16px;
@@ -22,13 +26,18 @@
     margin-top: 10px;
 }
 
+.form-field lightning-input {
+    --slds-c-input-color-border-focus: var(--pea-violet);
+    --slds-c-input-shadow-focus: 0 0 0 1px var(--pea-violet);
+}
+
 .form-actions {
     margin-top: 16px;
 }
 
 .form-actions lightning-button {
-    --slds-c-button-brand-color-background: #7c3aed;
-    --slds-c-button-brand-color-border: #7c3aed;
+    --slds-c-button-brand-color-background: var(--pea-violet);
+    --slds-c-button-brand-color-border: var(--pea-violet);
     --slds-c-button-brand-color-background-hover: #6d28d9;
     --slds-c-button-brand-color-border-hover: #6d28d9;
 }

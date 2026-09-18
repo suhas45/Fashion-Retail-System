@@ -1,9 +1,14 @@
 .options-card {
+    --pea-orange: #f97316;
+    --pea-orange-light: #fff3e8;
+    --pea-violet: #7c3aed;
+    --pea-violet-light: #f4effe;
+
     width: 100%;
     box-sizing: border-box;
     padding: 16px;
-    border: 1px solid #e5e5e5;
-    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
     background: #ffffff;
 }
 
@@ -17,12 +22,12 @@
 .header-icon {
     width: 34px;
     height: 34px;
-    border-radius: 10px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f3f0ff;
-    color: #6c35d9;
+    background: var(--pea-violet);
+    color: #ffffff;
     flex-shrink: 0;
 }
 
@@ -66,8 +71,8 @@
 }
 
 .option-button:hover {
-    border-color: #7b3ff2;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-color: var(--pea-violet);
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
     transform: translateY(-1px);
 }
 
@@ -75,15 +80,19 @@
     transform: translateY(0);
 }
 
+.option-main {
+    display: flex;
+    align-items: baseline;
+}
+
 .option-size {
-    min-width: 42px;
     font-size: 14px;
     font-weight: 700;
     color: #181818;
 }
 
-.option-separator {
-    margin-right: 7px;
+.option-divider {
+    margin: 0 1px;
     color: #999999;
 }
 
@@ -92,16 +101,35 @@
     color: #444444;
 }
 
-.option-arrow {
+.option-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     margin-left: auto;
+}
+
+.option-price {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--pea-orange);
+    background: var(--pea-orange-light);
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+.option-arrow {
     font-size: 18px;
-    color: #7b3ff2;
+    color: var(--pea-violet);
 }
 
 .options-hint {
     margin-top: 12px;
+    padding: 9px 14px;
+    background: var(--pea-orange-light);
+    border-radius: 8px;
     font-size: 11px;
-    color: #777777;
+    color: #9a4a12;
     text-align: center;
 }
 

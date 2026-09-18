@@ -1,117 +1,34 @@
 <template>
     <div class="exchange-card">
 
-        <div class="exchange-header">
-            <div class="success-icon">
-                ✓
-            </div>
-
-            <div>
-                <div class="header-title">
-                    Exchange Created
-                </div>
-
-                <div class="header-subtitle">
-                    Your product exchange has been created successfully
-                </div>
-            </div>
+        <div class="success-icon">
+            <svg
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+            >
+                <path
+                    d="M5 13l4 4L19 7"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                ></path>
+            </svg>
         </div>
 
-
-        <div class="exchange-number-section">
-            <div class="label">
-                Exchange Number
-            </div>
-
-            <div class="exchange-number">
-                {exchangeNumber}
-            </div>
-        </div>
-
-
-        <div class="status-row">
-
-            <div>
-                <span class="label">Status</span>
-                <span class="status">{status}</span>
-            </div>
-
-            <template if:true={orderNumber}>
-                <div>
-                    <span class="label">Order</span>
-                    <span class="value">{orderNumber}</span>
-                </div>
+        <div class="message">
+            Your exchange has been initiated for
+            <span class="product-name">{newProduct}</span>
+            <template if:true={newVariant}>
+                <span class="variant">({newVariant})</span>
             </template>
-
         </div>
 
-
-        <div class="products">
-
-            <div class="product-section">
-
-                <div class="section-label">
-                    Original Product
-                </div>
-
-                <div class="product-name">
-                    {originalProduct}
-                </div>
-
-                <div class="variant">
-                    {originalVariant}
-                </div>
-
-                <template if:true={originalPrice}>
-                    <div class="price">
-                        {originalPrice}
-                    </div>
-                </template>
-
-            </div>
-
-
-            <div class="arrow">
-                →
-            </div>
-
-
-            <div class="product-section">
-
-                <div class="section-label">
-                    New Product
-                </div>
-
-                <div class="product-name">
-                    {newProduct}
-                </div>
-
-                <div class="variant">
-                    {newVariant}
-                </div>
-
-                <template if:true={newPrice}>
-                    <div class="price">
-                        {newPrice}
-                    </div>
-                </template>
-
-            </div>
-
-        </div>
-
-
-        <template if:true={priceDifference}>
-            <div class="price-difference">
-
-                <span class="label">
-                    Price Difference
-                </span>
-
-                <span class="difference">
-                    {priceDifference}
-                </span>
-
+        <template if:true={exchangeNumber}>
+            <div class="exchange-number-badge">
+                Exchange {exchangeNumber}
             </div>
         </template>
 

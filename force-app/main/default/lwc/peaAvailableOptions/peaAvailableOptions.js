@@ -45,7 +45,7 @@ export default class PeaAvailableOptions extends LightningElement {
                 displayPrice:
                     option.price !== null &&
                     option.price !== undefined
-                        ? `$${Number(option.price).toFixed(2)}`
+                        ? Number(option.price).toFixed(2)
                         : ''
             };
         });
