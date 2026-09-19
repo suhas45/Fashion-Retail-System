@@ -291,14 +291,14 @@ global without sharing class PEA_ExchangeService {
                 }
             } else {
                 res.isAvailable = false;
-                res.options = findStructuredAvailableOptions(currentSku.Product__c);
+                res.options = findStructuredAvailableOptions(currentSku.Product__c, currentSku.Id);
                 res.availableOptionsText = formatStructuredAvailableOptions(res.options);
             }
             responses.add(res);
         }
         return responses;
     }
-    private static List<AvailableOption> findStructuredAvailableOptions(Id productId) {
+    private static List<AvailableOption> findStructuredAvailableOptions(Id productId, Id excludeSkuId) {
         List<AvailableOption> options = new List<AvailableOption>();
         List<AggregateResult> stocked = [
             SELECT SKU__c, SUM(Quantity_On_Hand__c) totalQuantity
@@ -313,7 +313,7 @@ global without sharing class PEA_ExchangeService {
         Set<Id> stockedSkuIds = new Set<Id>();
         for (AggregateResult ar : stocked) {
             Id skuId = (Id) ar.get('SKU__c');
-            if (skuId != null) {
+            if (skuId != null && skuId != excludeSkuId) {
                 stockedSkuIds.add(skuId);
             }
         }

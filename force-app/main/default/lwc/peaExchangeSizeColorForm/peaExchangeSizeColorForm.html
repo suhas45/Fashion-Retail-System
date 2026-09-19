@@ -27,6 +27,7 @@
 
         <div class="form-actions">
             <lightning-button
+                lwc:if={isButtonVisible}
                 label="Check Availability"
                 variant="brand"
                 onclick={handleSubmit}

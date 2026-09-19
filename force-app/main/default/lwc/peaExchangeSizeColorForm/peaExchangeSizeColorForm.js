@@ -10,6 +10,7 @@ import { LightningElement, api } from 'lwc';
 // options via the SKU_Availability action's existing fallback behavior.
 export default class PeaExchangeSizeColorForm extends LightningElement {
     @api configuration;
+    isButtonVisible = false; 
 
     _value = {};
     desiredSize = '';
